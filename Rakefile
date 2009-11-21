@@ -10,6 +10,7 @@ begin
     gem.email = "leshill@gmail.com"
     gem.homepage = "http://github.com/leshill/aws-ext"
     gem.authors = ["Les Hill"]
+    gem.add_dependency "aws-s3", ">= 0.6.2"
     gem.add_development_dependency "rspec", ">= 1.2.9"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
