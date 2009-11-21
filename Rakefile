@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "aws-ext"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{Extensions for aws-s3}
+    gem.description = %Q{Extensions for aws-s3}
     gem.email = "leshill@gmail.com"
     gem.homepage = "http://github.com/leshill/aws-ext"
     gem.authors = ["Les Hill"]
