@@ -2,6 +2,10 @@
 
 Extensions for the aws-s3 gem
 
+== Installing
+
+  % sudo gem install aws-ext --source http://gemcutter.org
+
 == S3Object
 
 === .copy_across_buckets(src_bucket, src_key, dest_bucket, dest_key, acl_policy)
