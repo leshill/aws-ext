@@ -12,7 +12,7 @@ Extensions for the aws-s3 gem
 
 Copies arbitrary S3Object across buckets using the Amazon S3 copy option. ACLs default to :public_read. Passing :copy as the ACL will copy the sources ACL.
 
-=== #copy_to_bucket(dest_bucket, dest_key = nil, acl_policy = :copy
+=== #copy_to_bucket(dest_bucket, dest_key = nil, acl_policy = :copy)
 
 Copies this S3Object across buckets using the Amazon S3 copy option. Destination key defaults to Source key.ACLs default to :public_read. Passing :copy as the ACL will copy the sources ACL.
 
