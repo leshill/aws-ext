@@ -2,30 +2,31 @@ require File.expand_path(File.join(File.dirname(__FILE__), '/spec_helper'))
 
 describe 'aws_ext' do
   context "AWS::S3::Bucket" do
+    let(:key) { 'key' }
+    let(:name) { 'bucket' }
+    let(:bucket) { AWS::S3::Bucket.new(:name => name) }
+
     it "#exists? delegates to S3Object.exists?" do
-      key = 'key'
-      name = 'bucket'
       AWS::S3::S3Object.should_receive(:exists?).with(key, name)
-      AWS::S3::Bucket.new(:name => name).exists?(key)
+      bucket.exists?(key)
     end
 
     it "#find delegates to S3Object.find" do
-      key = 'key'
-      name = 'bucket'
       AWS::S3::S3Object.should_receive(:find).with(key, name)
-      AWS::S3::Bucket.new(:name => name).find(key)
+      bucket.find(key)
     end
 
-    it "#each_object calls objects with max_keys and marker set" do
-      key = 'key'
-      initial_opts = {:max_keys => 1}
-      initial_return = [stub('object', :key => key)]
-      second_opts = {:max_keys => 1}
-      second_opts[:marker] = key
-      bucket = AWS::S3::Bucket.new(:name => 'bucket')
-      bucket.should_receive(:objects).with(initial_opts).and_return(initial_return)
-      bucket.should_receive(:objects).with(second_opts).and_return([])
-      bucket.each_object(initial_opts) {}
+    describe "#each_object" do
+      let(:objects_options_1) { {:max_keys => 1} }
+      let(:objects_returned_1) { [stub('object', :key => key)] }
+      let(:objects_options_2) { objects_options_1[:marker] = key; objects_options_1 }
+      let(:objects_returned_2) { [] }
+
+      it "iterates objects with max_keys and marker set" do
+        bucket.should_receive(:objects).with(objects_options_1).and_return(objects_returned_1)
+        bucket.should_receive(:objects).with(objects_options_2).and_return(objects_returned_2)
+        bucket.each_object(objects_options_1) {}
+      end
     end
   end
 
