@@ -18,6 +18,10 @@ Copies this S3Object across buckets using the Amazon S3 copy option. Destination
 
 == Bucket
 
+=== #copy_to_bucket(copy_bucket)
+
+Copy all objects in this bucket to the copy_bucket.
+
 === #exists?(key)
 
 Does key exist in this bucket?

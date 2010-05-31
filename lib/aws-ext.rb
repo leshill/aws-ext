@@ -21,6 +21,12 @@ module AWS
     end
 
     class Bucket
+      def copy_to_bucket(copy_bucket)
+        each_object do |obj|
+          obj.copy_to_bucket(copy_bucket)
+        end
+      end
+
       def each_object(opts = {}, &block)
         opts = { :max_keys => 100 }.merge(opts)
         while (response = objects(opts).each {|obj| yield obj }).any? do
@@ -38,3 +44,4 @@ module AWS
     end
   end
 end
+

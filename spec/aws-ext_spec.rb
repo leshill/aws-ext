@@ -27,6 +27,22 @@ describe 'aws_ext' do
         bucket.should_receive(:objects).with(objects_options_2).and_return(objects_returned_2)
         bucket.each_object(objects_options_1) {}
       end
+
+      describe "#copy_to_bucket" do
+        let(:copy_bucket) { AWS::S3::Bucket.new(:name => 'copy_bucket') }
+        let(:s3object) { stub }
+
+        it "iterates over each object" do
+          bucket.should_receive(:each_object)
+          bucket.copy_to_bucket(copy_bucket)
+        end
+
+        it "copies each object to the destination bucket" do
+          s3object.should_receive(:copy_to_bucket).with(copy_bucket)
+          bucket.stub(:each_object).and_yield(s3object)
+          bucket.copy_to_bucket(copy_bucket)
+        end
+      end
     end
   end
 
