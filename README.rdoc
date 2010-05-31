@@ -4,7 +4,7 @@ Extensions for the aws-s3 gem
 
 == Installing
 
-  % sudo gem install aws-ext --source http://gemcutter.org
+  % gem install aws-ext
 
 == S3Object
 
@@ -46,4 +46,4 @@ Paginates over all objects in the bucket. :max_keys defaults to 100.
 
 == Copyright
 
-Copyright (c) 2009 Les Hill. See LICENSE for details.
+Copyright (c) 2010 Les Hill. See LICENSE for details.
