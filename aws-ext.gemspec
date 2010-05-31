@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{aws-ext}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Les Hill"]
-  s.date = %q{2009-11-21}
+  s.date = %q{2010-05-31}
   s.description = %q{Extensions for aws-s3}
   s.email = %q{leshill@gmail.com}
   s.extra_rdoc_files = [
@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
      ".gitignore",
+     ".rvmrc",
      "LICENSE",
      "README.rdoc",
      "Rakefile",
@@ -32,7 +33,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/leshill/aws-ext}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Extensions for aws-s3}
   s.test_files = [
     "spec/aws-ext_spec.rb",
