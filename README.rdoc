@@ -8,13 +8,17 @@ Extensions for the aws-s3 gem
 
 == S3Object
 
-=== .copy_across_buckets(src_bucket, src_key, dest_bucket, dest_key, acl_policy)
+=== .copy_across_buckets(src_bucket, src_key, dest_bucket, dest_key, acl_policy = :public_read)
 
-Copies arbitrary S3Object across buckets using the Amazon S3 copy option. ACLs default to :public_read. Passing :copy as the ACL will copy the sources ACL.
+Copies arbitrary S3Object across buckets using the Amazon S3 copy option. ACLs
+default to :public_read. Passing :copy as the ACL will copy the ACL from the
+source.
 
 === #copy_to_bucket(dest_bucket, dest_key = nil, acl_policy = :copy)
 
-Copies this S3Object across buckets using the Amazon S3 copy option. Destination key defaults to Source key.ACLs default to :public_read. Passing :copy as the ACL will copy the sources ACL.
+Copies this S3Object across buckets using the Amazon S3 copy option.
+Destination key defaults to Source key. Passing :copy as the ACL will copy the
+ACL form the source.
 
 == Bucket
 
@@ -41,7 +45,8 @@ Paginates over all objects in the bucket. :max_keys defaults to 100.
 * Add tests for it. This is important so I don't break it in a
   future version unintentionally.
 * Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
+  (if you want to have your own version, that is fine but bump version in a
+  commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
 == Copyright

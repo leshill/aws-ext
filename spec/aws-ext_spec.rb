@@ -47,54 +47,56 @@ describe 'aws_ext' do
   end
 
   context "AWS::S3::S3Object" do
-    it "#copy_to_bucket delegates to S3Object.copy_across_buckets with defaults" do
-      key = 'key'
-      src_bucket_name = 'src_bucket'
-      src_bucket = AWS::S3::Bucket.new(:name => src_bucket_name)
-      dest_bucket_name = 'dest_bucket'
-      dest_bucket = AWS::S3::Bucket.new(:name => dest_bucket_name)
-      AWS::S3::S3Object.should_receive(:copy_across_buckets).with(src_bucket_name, key, dest_bucket_name, key, :copy)
-      AWS::S3::S3Object.new(:bucket => src_bucket, 'key' => key).copy_to_bucket(dest_bucket)
+    let(:src_key) { 'src_key' }
+    let(:dest_key) { 'dest_key' }
+    let(:src_bucket) { 'src_bucket' }
+    let(:dest_bucket) { 'dest_bucket' }
+
+    describe "#copy_to_bucket" do
+      let(:s3bucket_src) { AWS::S3::Bucket.new(:name => src_bucket) }
+      let(:s3bucket_dest) { AWS::S3::Bucket.new(:name => dest_bucket) }
+      let(:s3object) { AWS::S3::S3Object.new(:bucket => s3bucket_src, 'key' => src_key) }
+
+      it "#copy_to_bucket delegates to S3Object.copy_across_buckets with defaults" do
+        AWS::S3::S3Object.should_receive(:copy_across_buckets).with(src_bucket, src_key, dest_bucket, src_key, :copy)
+        s3object.copy_to_bucket(s3bucket_dest)
+      end
+
+      it "#copy_to_bucket delegates to S3Object.copy_across_buckets without defaults" do
+        acl = :public_read
+        AWS::S3::S3Object.should_receive(:copy_across_buckets).with(src_bucket, src_key, dest_bucket, dest_key, acl)
+        s3object.copy_to_bucket(s3bucket_dest, dest_key, acl)
+      end
     end
 
-    it "#copy_to_bucket delegates to S3Object.copy_across_buckets without defaults" do
-      acl = :public_read
-      src_key = 'src_key'
-      dest_key = 'dest_key'
-      src_bucket_name = 'src_bucket'
-      src_bucket = AWS::S3::Bucket.new(:name => src_bucket_name)
-      dest_bucket_name = 'dest_bucket'
-      dest_bucket = AWS::S3::Bucket.new(:name => dest_bucket_name)
-      AWS::S3::S3Object.should_receive(:copy_across_buckets).with(src_bucket_name, src_key, dest_bucket_name, dest_key, acl)
-      AWS::S3::S3Object.new(:bucket => src_bucket, 'key' => src_key).copy_to_bucket(dest_bucket, dest_key, acl)
-    end
+    describe ".copy_across_buckets" do
+      let(:dest_path) { AWS::S3::S3Object.path!(dest_bucket, dest_key) }
+      let(:copy_header) { {'x-amz-copy-source' => AWS::S3::S3Object.path!(src_bucket, src_key)} }
 
-    it ".copy_across_buckets when passed an acl_policy that is not :copy just puts the copy" do
-      acl = :public_read
-      src_key = 'src_key'
-      dest_key = 'dest_key'
-      src_bucket = 'src_bucket'
-      dest_bucket = 'dest_bucket'
-      headers = {}
-      headers['x-amz-copy-source'] = AWS::S3::S3Object.path!(src_bucket, src_key)
-      headers['x-amz-acl'] = acl
-      AWS::S3::S3Object.should_receive(:put).with(AWS::S3::S3Object.path!(dest_bucket, dest_key), headers)
-      AWS::S3::S3Object.copy_across_buckets(src_bucket, src_key, dest_bucket, dest_key, :public_read)
-    end
+      it "delegates to put with the destination path" do
+        AWS::S3::S3Object.should_receive(:put).with(dest_path, anything)
+        AWS::S3::S3Object.copy_across_buckets(src_bucket, src_key, dest_bucket, dest_key)
+      end
 
-    it ".copy_across_buckets when passed a :copy acl_policy puts the copy and copies the acl" do
-      acl = :copy
-      src_key = 'src_key'
-      dest_key = 'dest_key'
-      src_bucket = 'src_bucket'
-      dest_bucket = 'dest_bucket'
-      headers = {}
-      headers['x-amz-copy-source'] = AWS::S3::S3Object.path!(src_bucket, src_key)
-      returned_acl = 'returned_acl'
-      AWS::S3::S3Object.should_receive(:acl).with(src_key, src_bucket).and_return(returned_acl)
-      AWS::S3::S3Object.should_receive(:acl).with(dest_key, dest_bucket, returned_acl)
-      AWS::S3::S3Object.should_receive(:put).with(AWS::S3::S3Object.path!(dest_bucket, dest_key), headers)
-      AWS::S3::S3Object.copy_across_buckets(src_bucket, src_key, dest_bucket, dest_key, acl)
+      it "delegates to put with copy source set" do
+        AWS::S3::S3Object.should_receive(:put).with(anything, hash_including(copy_header))
+        AWS::S3::S3Object.copy_across_buckets(src_bucket, src_key, dest_bucket, dest_key)
+      end
+
+      it "delegates to put with the requested canned acl policy" do
+        acl = :private
+        acl_header = {'x-amz-acl' => acl }
+        AWS::S3::S3Object.should_receive(:put).with(anything, hash_including(acl_header))
+        AWS::S3::S3Object.copy_across_buckets(src_bucket, src_key, dest_bucket, dest_key, acl)
+      end
+
+      it "when acl is :copy, copies the existing acl policy" do
+        returned_acl = 'returned_acl'
+        AWS::S3::S3Object.should_receive(:acl).with(src_key, src_bucket).and_return(returned_acl)
+        AWS::S3::S3Object.should_receive(:acl).with(dest_key, dest_bucket, returned_acl)
+        AWS::S3::S3Object.stub(:put)
+        AWS::S3::S3Object.copy_across_buckets(src_bucket, src_key, dest_bucket, dest_key, :copy)
+      end
     end
 
   end

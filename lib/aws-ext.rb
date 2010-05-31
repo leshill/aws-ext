@@ -3,7 +3,7 @@ require 'aws/s3'
 module AWS
   module S3
     class S3Object
-      def self.copy_across_buckets(src_bucket, src_key, dest_bucket, dest_key, acl_policy)
+      def self.copy_across_buckets(src_bucket, src_key, dest_bucket, dest_key, acl_policy = :public_read)
         headers = {'x-amz-copy-source' => path!(src_bucket, src_key)}
         if acl_policy == :copy
           returning put(path!(dest_bucket, dest_key), headers) do
